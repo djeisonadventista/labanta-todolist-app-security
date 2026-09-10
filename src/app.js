@@ -2,38 +2,64 @@ const express = require('express');
 const session = require('express-session');
 require('dotenv').config();
 
-
-// Import routes
 const authRoutes = require('./routes/auth');
+//const authRoutes = require('./routes/auth.vulnerable.backup');
 const taskRoutes = require('./routes/tasks');
 const apiRoutes = require('./routes/api');
 
-// Initialize Express app
 const app = express();
 
-// Serve static files from the 'public' directory
+// Static files
 app.use(express.static('public'));
 
-app.set('view engine', 'ejs'); // Set EJS as the view engine
-app.set('views', 'views'); // Set the directory for EJS templates
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (for form submissions)
-app.use(express.json()); // Parse corpos em JSON (necessário para a API em /api/*)
+// EJS
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
-// Configure session
+// Body parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// ============================================================
+// SESSION
+// ============================================================
+
 app.use(session({
-  secret: process.env.SESSION_SECRET, // Secret key for session encryption
-  resave: false,
-  saveUninitialized: false,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: 'lax'
+    }
 }));
 
-// Use the imported routes
-app.get('/', (req, res) => res.redirect('/tasks')); // Redirect root route to /tasks
-app.get('/session-debug', (req, res) => res.json(req.session));
-app.get('/debug-session', (req, res) => res.json(req.session));
-app.use(authRoutes); // Use authentication routes
-app.use(taskRoutes); // Use task management routes
-app.use(apiRoutes); // Use API routes
+// ============================================================
+// ROUTES
+// ============================================================
 
-// Start the server on port specified in environment variable or default to 3000
+app.get('/', (req, res) => {
+    res.redirect('/tasks');
+});
+
+app.get('/session-debug', (req, res) => {
+    res.json(req.session);
+});
+
+app.get('/debug-session', (req, res) => {
+    res.json(req.session);
+});
+
+app.use(authRoutes);
+app.use(taskRoutes);
+app.use(apiRoutes);
+
+// ============================================================
+// SERVER
+// ============================================================
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`TodoList app a correr em http://localhost:${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`TodoList app a correr em http://localhost:${PORT}`);
+});
