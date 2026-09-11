@@ -68,4 +68,5 @@ router.post('/tasks/:id/delete', requireAuth, async (req, res) => {
   res.redirect('/tasks');
 });
 
+//corrigir uma vulnerabilidade de IDOR (Insecure Direct Object Reference) e SQL Injection, você deve garantir que as operações de leitura, atualização e exclusão de tarefas sejam feitas apenas pelo proprietário da tarefa. Além disso, você deve usar consultas parametrizadas para evitar SQL Injection. Aqui está uma versão corrigida do código:
 module.exports = router;
