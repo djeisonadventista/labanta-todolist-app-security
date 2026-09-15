@@ -14,15 +14,15 @@ services:
     networks:
       - todolist-network
 
-  todolist-app:
-    container_name: todolist-app
+  #todolist-app:
+    #container_name: todolist-app
     #build: .
-    image: todolist-app:0.0.0
-    ports:
-      - 3000:3000
-    env_file: .env
-    networks:
-      - todolist-network
+    #image: todolist-app:0.0.0
+    #ports:
+    #  - 3000:3000
+    #env_file: .env
+    #networks:
+     # - todolist-network
 
 
   pgadmin4:
