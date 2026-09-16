@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require('express');
 const pool = require('../db');
 const router = express.Router();
@@ -9,8 +10,12 @@ router.post('/register', async (req, res) => {
     const { username, password } = req.body;
     try {
         // VULNERÁVEL: password guardada em texto simples + query por concatenação (SQL Injection)
-        const query = `INSERT INTO users (username, password_hash) VALUES ('${username}', '${password}')`;
-        await pool.query(query);
+
+        const query = `INSERT INTO users (username, password_hash) VALUES ($1,$2)`;
+        const PasswordHash = await bcrypt.hash(password, 10);
+        await pool.query(query, [username, PasswordHash]);
+        //const query = `INSERT INTO users (username, password_hash) VALUES ('${username}', '${password}')`;
+        //await pool.query(query);
         res.redirect('/login');
     } catch (err) {
         res.render('register', { error: 'Utilizador já existe ou dados inválidos.', username: null });
@@ -23,17 +28,25 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     // VULNERÁVEL: query por concatenação de string + comparação direta de password em texto simples
-    const query = `SELECT * FROM users WHERE username = '${username}' AND password_hash = '${password}'`;
-    const result = await pool.query(query);
+    const query = `SELECT * FROM users WHERE username = $1`;
+    const result = await pool.query(query, [username]);
+    //const query = `SELECT * FROM users WHERE username = '${username}' AND password_hash = '${password}'`;
+    //const result = await pool.query(query);
     const user = result.rows[0];
 
-    if (!user) {
+    let match = false;
+
+    if (user) {
+        match = await bcrypt.compare(password, user.password_hash);
+    }
+
+    if (!match) {
         return res.render('login', { error: 'Credenciais inválidas.', username: null });
     }
 
     req.session.userId = user.id;
     req.session.username = user.username;
-    res.redirect(`/tasks?userId=${user.id}`);
+    res.redirect(`/tasks`);
 });
 
 // GET /logout - Handle user logout

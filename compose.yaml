@@ -24,20 +24,6 @@ services:
     #networks:
      # - todolist-network
 
-
-  postgres_todolist:
-    container_name: postgres_todolist
-    image: postgres:15
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: djeison
-      TZ: "Atlantic/Cape_Verde"
-    volumes:
-      - postgres_test:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432 
-
   pgadmin4:
     image: dpage/pgadmin4:9.2
     container_name: pgadmin4
@@ -55,9 +41,6 @@ services:
 volumes:
   pg15_data:
     name: pg15_data
-
-  postgres_test:
-    name: postgres_test
 
   pgadmin-2025:
     name: pgadmin-2025
