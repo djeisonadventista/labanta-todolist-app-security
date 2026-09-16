@@ -11,6 +11,19 @@ services:
       - pg15_data:/var/lib/postgresql/data/
     ports:
       - 5432:5432
+    networks:
+      - todolist-network
+
+  #todolist-app:
+    #container_name: todolist-app
+    #build: .
+    #image: todolist-app:0.0.0
+    #ports:
+    #  - 3000:3000
+    #env_file: .env
+    #networks:
+     # - todolist-network
+
 
   postgres_todolist:
     container_name: postgres_todolist
@@ -36,6 +49,8 @@ services:
     restart: unless-stopped
     volumes:
       - pgadmin-2025:/var/lib/pgadmin
+    networks:
+      - todolist-network
 
 volumes:
   pg15_data:
@@ -46,3 +61,8 @@ volumes:
 
   pgadmin-2025:
     name: pgadmin-2025
+
+networks:
+  todolist-network:
+    name: todolist-network
+    external: true
