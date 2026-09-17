@@ -3,7 +3,7 @@ const session = require('express-session');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
-//const authRoutes = require('./routes/auth.vulnerable.backup');
+//const authRoutes = require('./routes/autah');
 const taskRoutes = require('./routes/tasks');
 const apiRoutes = require('./routes/api');
 
