@@ -14,6 +14,21 @@ services:
     networks:
       - todolist-network
 
+  sonarqube:
+    image: sonarqube:26.1.0.118079-community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: true
+      SONAR_JDBC_URL: ${SONAR_JDBC_URL}
+      SONAR_JDBC_USERNAME: ${SONAR_JDBC_USERNAME}
+      SONAR_JDBC_PASSWORD: ${SONAR_JDBC_PASSWORD}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+    networks:
+      - todolist-network 
+
   #todolist-app:
     #container_name: todolist-app
     #build: .
@@ -22,7 +37,7 @@ services:
     #  - 3000:3000
     #env_file: .env
     #networks:
-     # - todolist-network
+    # - todolist-network
 
   pgadmin4:
     image: dpage/pgadmin4:9.2
@@ -44,6 +59,9 @@ volumes:
 
   pgadmin-2025:
     name: pgadmin-2025
+
+  sonarqube_data:
+    name: sonarqube_data
 
 networks:
   todolist-network:
