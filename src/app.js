@@ -7,7 +7,13 @@ const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 const apiRoutes = require('./routes/api');
 
-const app = express();
+//const app = express();
+const app2 ="Alone"
+let app = express();
+app.disable('x-powered-by');
+if (app2) {
+    console.log("Alone", app2);
+}
 
 // Static files
 app.use(express.static('public'));
